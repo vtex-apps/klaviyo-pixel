@@ -3,6 +3,7 @@ export interface PixelMessage extends MessageEvent {
     | ProductViewData
     | ProductClickData
     | OrderPlacedData
+    | OrderPlacedTrackedData
     | PageViewData
     | ProductImpressionData
     | AddToCartData
