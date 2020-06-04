@@ -1,20 +1,23 @@
 <script>
-  (function() {
+  ;(function() {
     var appId = '{{settings.appId}}'
+    var useRefIdSetting = '{{settings.useRefId}}'
 
     if (!appId) {
-      console.error('Warning: No Klaviyo Pixel App ID is defined. Please configure it in the apps admin.');
+      console.error(
+        'Warning: No Klaviyo Pixel App ID is defined. Please configure it in the apps admin.'
+      )
       return
     }
     ;(function e() {
-      // window.__klaviyo_public_key = appId Make public key accessible
+      window.__klaviyo_useRefIdSetting = useRefIdSetting
+        ? JSON.parse(useRefIdSetting)
+        : false
       var e = document.createElement('script')
       ;(e.type = 'text/javascript'),
         (e.async = true),
         (e.src =
-          'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=' +
-          appId +
-          '')
+          'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=' + appId)
       var t = document.getElementsByTagName('script')[0]
       t.parentNode.insertBefore(e, t)
     })()

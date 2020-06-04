@@ -3,6 +3,7 @@
     "test": "vtex-test-tools test"
   },
   "dependencies": {
+    "graphql": "^15.0.0",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
@@ -12,18 +13,8 @@
     "@types/node": "^13.1.8",
     "@types/ramda": "^0.26.5",
     "@types/react": "^16.9.19",
-    "@types/react-intl": "^3.0.0",
     "@vtex/test-tools": "^3.0.1",
-    "apollo-cache-inmemory": "^1.6.5",
-    "apollo-client": "^2.6.8",
-    "eslint": "^5.16.0",
-    "eslint-config-vtex-react": "^4.1.0",
-    "graphql": "^14.5.4",
-    "prettier": "^1.18.2",
-    "react-intl": "^3.11.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "typescript": "3.7.3",
     "vtex.pixel-interfaces": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.pixel-interfaces@1.1.1/public/_types/react",
-    "vtex.render-runtime": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.89.0-hkignore.0/public/@types/vtex.render-runtime"
+    "vtex.render-runtime": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.100.1/public/@types/vtex.render-runtime"
   }
 }

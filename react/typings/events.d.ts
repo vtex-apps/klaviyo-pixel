@@ -114,6 +114,11 @@ export interface OrderPlacedData extends Order, EventData {
   eventName: 'vtex:orderPlaced'
 }
 
+export interface OrderPlacedTrackedData extends Order, EventData {
+  event: 'orderPlacedTracked'
+  eventName: 'vtex:orderPlacedTracked'
+}
+
 export interface ProductViewData extends EventData {
   event: 'productView'
   eventName: 'vtex:productView'
@@ -142,6 +147,7 @@ interface CartItem {
   name: string
   quantity: number
   productRefId: string
+  referenceId: string
   brand: string
   category: string
   detailUrl: string
@@ -149,16 +155,24 @@ interface CartItem {
 }
 
 export interface Order {
-  currency: string
   accountName: string
+  corporateName: string
+  coupon: string
+  currency: string
+  openTextField: string
   orderGroup: string
   salesChannel: string
-  coupon: string
-  visitorType: string
-  visitorContactInfo: string[]
-  visitorAddressState: string
+  visitorAddressCity: string
+  visitorAddressComplement: string
   visitorAddressCountry: string
+  visitorAddressNeighborhood: string
+  visitorAddressNumber: string
   visitorAddressPostalCode: string
+  visitorAddressState: string
+  visitorAddressStreet: string
+  visitorContactInfo: string[]
+  visitorContactPhone: string
+  visitorType: string
   transactionId: string
   transactionDate: string
   transactionAffiliation: string
@@ -170,6 +184,7 @@ export interface Order {
   transactionCurrency: string
   transactionPaymentType: PaymentType[]
   transactionShippingMethod: ShippingMethod[]
+  transactionLatestShippingEstimate: Date
   transactionProducts: ProductOrder[]
   transactionPayment: {
     id: string
@@ -216,6 +231,7 @@ export interface ProductOrder {
   sellingPrice: number
   tax: number
   quantity: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   components: any[]
   measurementUnit: string
   unitMultiplier: number
@@ -244,7 +260,7 @@ export interface ProductSummary extends Product {
 
 export interface ProductDetail extends Product {
   categoryId: string
-  categoryTree: { id: string; name: string }[]
+  categoryTree: Array<{ id: string; name: string }>
   selectedSku: Item
 }
 
@@ -252,9 +268,14 @@ export interface Item {
   itemId: string
   name: string
   ean?: string // TODO: provide this info at productImpression
-  referenceId: { Key: string; Value: string }
+  referenceId: ReferenceId[]
   seller?: Seller
   sellers: Seller[]
+}
+
+interface ReferenceId {
+  Key: string
+  Value: string
 }
 
 export interface Seller {
