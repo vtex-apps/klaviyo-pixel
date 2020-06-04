@@ -1,0 +1,25 @@
+{
+  "stack": "dotnet",
+  "memory": 256,
+  "runtimeArgs": [],
+  "routes": {
+    "createHook": {
+      "path": "/klaviyo/create-hook",
+      "public": true
+    },
+    "processNotification": {
+      "path": "/klaviyo-notification",
+      "public": true
+    },
+    "buildEvent": {
+      "path": "/klaviyo/build-event/:orderId/:eventType",
+      "public": true
+    }
+  },
+  "events": {
+    "onAppsLinked": {
+      "sender": "apps",
+      "keys": ["linked"]
+    }
+  }
+}

@@ -2,8 +2,8 @@
   "name": "klaviyo-pixel",
   "vendor": "vtex",
   "version": "0.0.1",
-  "title": "Klaviyo Pixel App",
-  "description": "Klaviyo Pixel Tracking App Implementation",
+  "title": "Klaviyo Integration",
+  "description": "Integration of Klaviyo Analytics",
   "billingOptions": {
     "termsURL": "",
     "support": {
@@ -15,7 +15,8 @@
     "react": "3.x",
     "store": "0.x",
     "pixel": "0.x",
-    "docs": "0.x"
+    "docs": "0.x",
+    "dotnet": "2.x"
   },
   "dependencies": {
     "vtex.pixel-interfaces": "1.x"
@@ -25,16 +26,78 @@
     "type": "object",
     "properties": {
       "appId": {
-        "title": "Merchant App ID",
-        "description": "Enter the Klaviyo App Public Key",
+        "title": "Company ID",
+        "description": "Enter your Klaviyo Company ID",
         "type": "string"
       },
       "useRefId": {
-        "title": "Use Reference Id",
-        "description": "Use reference Id rather than product id to link reviews to products",
+        "title": "Use Reference ID",
+        "description": "Use Reference ID rather than Product ID when tracking products",
         "type": "boolean"
+      },
+      "publicApiKey": {
+        "title": "Public API Key",
+        "description": "Enter your Public API Key for Klaviyo's server-side API",
+        "type": "string"
+      },
+      "productRootUrl": {
+        "title": "Product Root URL",
+        "description": "Root path for product links (i.e. https://www.store.com or https://www.store.com/us)",
+        "type": "string"
       }
     }
   },
+  "registries": ["smartcheckout"],
+  "policies": [
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "bnb.data.bl.uk"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "nuget.org"
+      }
+    },
+    {
+      "name": "ADMIN_DS"
+    },
+    {
+      "name": "AcessaTodosPedidos"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/dataentities/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/checkout/pvt/orders/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/orders/hook/config"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "a.klaviyo.com",
+        "path": "/api/*"
+      }
+    },
+    {
+      "name": "vbase-read-write"
+    }
+  ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

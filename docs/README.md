@@ -1,26 +1,27 @@
-First of all (even before the app's name), its README.md should contain the following sentence at the very beginning:
+📢 Use this project, [contribute](https://github.com/vtex-apps/klaviyo-pixel) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
 
-`📢 Use this project, [contribute](https://github.com/{OrganizationName}/{AppName}) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).`
+# Klaviyo Integration
 
-# APP NAME
+This app enables basic Klaviyo tracking for your VTEX store, including these JavaScript Track API events:
 
-Under the app's name, you should explain the topic, giving a **brief description** of the **app's functionality** in a store.
+`Active on Site` - When someone visits your website
+`Viewed Product` - When someone views a product
+`Added to Cart` - When someone adds an item to their cart
 
-Next, you can **add media** (either an image of a GIF) if possible, so that users can better understand how the app works in practice. 
+and these server-side Track API events:
 
-![Media Placeholder](https://user-images.githubusercontent.com/52087100/71204177-42ca4f80-227e-11ea-89e6-e92e65370c69.png)
+`Placed Order` - When an order successfully processes on your system
+`Ordered Product` - An event for each item in a processed order
+`Fulfilled Order` - When an order is sent to the customer
 
-## Configuration 
+## Configuration
 
-In this section, you first must **add the primary instructions** that will allow users to use the app in their store, such as [installing the app](https://vtex.io/docs/recipes/store/installing-an-app) and configuring it using the account's admin. 
+1. [Install](https://vtex.io/docs/recipes/store/installing-an-app) this app (`vtex.klaviyo-pixel`) in the desired account
+2. In your admin dashboard, go to **Apps** > **Klaviyo Integration** and input the following settings:
 
-Remember to also **showcase any necessary disclaimer** related to the app in this section, such as the different behavior it may display during its configuration. 
-
-## Modus Operandi *(not mandatory)*
-
-There are scenarios in which an app can behave differently in a store, according to its configuration. It's crucial then to go through these **behavioral changes** in this section, allowing users to fully understand the **practical application** of the app in their store.
-
-If you feel compelled to give further details, such as the app's **relationship with others**, don't hesitate to use this section. 
+- `Company ID`: Enter your Klaviyo Company ID.
+- `Use Reference ID`: Check this box to use Reference IDs rather than Product IDs when tracking products.
+- `Public API Key`: Enter your Klaviyo Public API Key (used for server-side API requests).
+- `Product Root URL`: Enter your store's root path for product links (i.e. `https://www.store.com` or `https://www.store.com/us`). In the server-side Track API requests this will be combined with the relative link for each product.
 
 ---
-

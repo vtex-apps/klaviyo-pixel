@@ -141,6 +141,7 @@ export interface ProductImpressionData extends EventData {
 }
 
 interface CartItem {
+  productId: string
   skuId: string
   variant: string
   price: number
@@ -250,6 +251,7 @@ interface Product {
   productId: string
   productName: string
   productReference: string
+  detailUrl: string
   linkText: string
   items: Item[]
 }
@@ -267,6 +269,7 @@ export interface ProductDetail extends Product {
 export interface Item {
   itemId: string
   name: string
+  imageUrl: string
   ean?: string // TODO: provide this info at productImpression
   referenceId: ReferenceId[]
   seller?: Seller

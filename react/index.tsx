@@ -1,11 +1,6 @@
 import { canUseDOM } from 'vtex.render-runtime'
 
-import {
-  PixelMessage,
-  ProductDetail,
-  CartItem,
-  // ProductOrder,
-} from './typings/events'
+import { PixelMessage, ProductDetail, CartItem } from './typings/events'
 
 declare const _learnq: any
 let newItems: CartItem[] = []
@@ -21,7 +16,7 @@ function getCartProductId(product: CartItem) {
   if (window.__klaviyo_useRefIdSetting) {
     return product.productRefId
   }
-  return product.productRefId
+  return product.productId
 }
 
 function getCartSkuId(product: CartItem) {
@@ -31,15 +26,21 @@ function getCartSkuId(product: CartItem) {
   return product.skuId
 }
 
-// function getOrderProductId(product: ProductOrder) {
-//   if (window.__klaviyo_useRefIdSetting) {
-//     return product.skuRefId
-//   }
-//   return product.id
-// }
-
 export function handleEvents(e: PixelMessage) {
   switch (e.data.eventName) {
+    case 'vtex:userData': {
+      const { email, firstName, lastName } = e.data
+      const learnq = _learnq || []
+      learnq.push([
+        'identify',
+        {
+          $email: email,
+          $first_name: firstName,
+          $last_name: lastName,
+        },
+      ])
+      break
+    }
     case 'vtex:productView': {
       const { product } = e.data
       const learnq = _learnq || []
@@ -47,8 +48,10 @@ export function handleEvents(e: PixelMessage) {
         ProductName: product.productName,
         ProductID: getProductId(product),
         Categories: product.categories,
-        ImageURL: '',
-        URL: product.linkText,
+        ImageURL: product.selectedSku?.imageUrl,
+        URL: `https://${window.location.hostname}${
+          window.__RUNTIME__.rootPath ? `/${window.__RUNTIME__.rootPath}` : ''
+        }${product.detailUrl}`,
         Brand: product.brand,
         Price: product.selectedSku?.sellers[0]?.commertialOffer?.Price ?? 0,
         CompareAtPrice:
@@ -97,7 +100,7 @@ export function handleEvents(e: PixelMessage) {
           RowTotal: item.price * item.quantity,
           ProductURL: item.detailUrl,
           ImageURL: item.imageUrl,
-          ProductCategories: [],
+          ProductCategories: item.category.split('/'),
         }
       })
       newItems.forEach(item => {
@@ -124,9 +127,6 @@ export function handleEvents(e: PixelMessage) {
           },
         ])
       })
-      break
-    }
-    case 'vtex:orderPlaced': {
       break
     }
     default: {
