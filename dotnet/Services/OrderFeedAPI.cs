@@ -1,4 +1,4 @@
-﻿using Klaviyo.Data;
+using Klaviyo.Data;
 using Klaviyo.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Vtex.Api.Context;
 
 namespace Klaviyo.Services
 {
@@ -15,8 +16,9 @@ namespace Klaviyo.Services
         private readonly IHttpClientFactory _clientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IVtexEnvironmentVariableProvider _environmentVariableProvider;
+        private readonly IIOServiceContext _context;
 
-        public OrderFeedAPI(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, IVtexEnvironmentVariableProvider environmentVariableProvider)
+        public OrderFeedAPI(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, IVtexEnvironmentVariableProvider environmentVariableProvider, IIOServiceContext context)
         {
             this._httpContextAccessor = httpContextAccessor ??
                                         throw new ArgumentNullException(nameof(httpContextAccessor));
@@ -26,6 +28,9 @@ namespace Klaviyo.Services
 
             this._environmentVariableProvider = environmentVariableProvider ??
                                                 throw new ArgumentNullException(nameof(environmentVariableProvider));
+
+            this._context = context ??
+                                throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<HookNotification> CreateOrUpdateHook()
@@ -124,11 +129,13 @@ namespace Klaviyo.Services
                 else
                 {
                     Console.WriteLine($"GetOrderInformation: [{response.StatusCode}] '{responseContent}'");
+                    _context.Vtex.Logger.Info("GetOrderInformation", null, $"Order# {orderId} [{response.StatusCode}] '{responseContent}'");
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"GetOrderInformation Error: {ex.Message}");
+                _context.Vtex.Logger.Error("GetOrderInformation", null, $"Order# {orderId} Error", ex);
             }
 
             return vtexOrder;
