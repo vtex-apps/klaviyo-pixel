@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Bug deserializing Rates and Benefits
+
 ## [0.0.3] - 2020-06-17
 
 ### Added

@@ -156,7 +156,7 @@ namespace Klaviyo.Services
                     {
                         Brands = vtexOrder.Items.Select(i => i.AdditionalInfo.BrandName).ToList(),
                         Categories = vtexOrder.Items.Select(i => i.AdditionalInfo.CategoriesIds.Replace(@"\", string.Empty)).ToList(),
-                        DiscountCode = string.Join(' ',vtexOrder.RatesAndBenefitsData.RateAndBenefitsIdentifiers),
+                        DiscountCode = JsonConvert.SerializeObject(vtexOrder.RatesAndBenefitsData.RateAndBenefitsIdentifiers), //string.Join(' ',vtexOrder.RatesAndBenefitsData.RateAndBenefitsIdentifiers),
                         DiscountValue = vtexOrder.Totals.Where(t => t.Name == "Discounts").Select(d => d.Value).FirstOrDefault(),
                         EventId = orderId,
                         ItemNames = vtexOrder.Items.Select(i => i.Name).ToList(),

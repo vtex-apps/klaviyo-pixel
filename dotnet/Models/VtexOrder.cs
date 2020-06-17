@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -555,7 +555,37 @@ namespace Klaviyo.Models
         public string Id { get; set; }
 
         [JsonProperty("rateAndBenefitsIdentifiers")]
-        public List<string> RateAndBenefitsIdentifiers { get; set; }
+        public List<RateAndBenefitsIdentifier> RateAndBenefitsIdentifiers { get; set; }
+    }
+
+    public class RateAndBenefitsIdentifier
+    {
+        [JsonProperty("id")]
+        public Guid Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("featured")]
+        public bool Featured { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("matchedParameters")]
+        public MatchedParameters MatchedParameters { get; set; }
+
+        [JsonProperty("additionalInfo")]
+        public object AdditionalInfo { get; set; }
+    }
+
+    public class MatchedParameters
+    {
+        [JsonProperty("category@CatalogSystem", NullValueHandling = NullValueHandling.Ignore)]
+        public string CategoryCatalogSystem { get; set; }
+
+        [JsonProperty("slaIds", NullValueHandling = NullValueHandling.Ignore)]
+        public string SlaIds { get; set; }
     }
 
     public class Seller

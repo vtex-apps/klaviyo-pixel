@@ -39,3 +39,5 @@ package-lock.json
 /.vs/Klaviyo/v16/.suo
 /dotnet/obj/Debug/netcoreapp3.0
 /dotnet/obj
+/dotnet/bin/Debug/netcoreapp3.0
+/.vs/Klaviyo/config
