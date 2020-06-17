@@ -1,4 +1,4 @@
-﻿using Klaviyo.Data;
+using Klaviyo.Data;
 using Klaviyo.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Vtex.Api.Context;
 
 namespace Klaviyo.Services
 {
@@ -19,17 +20,21 @@ namespace Klaviyo.Services
         private readonly IHttpClientFactory _clientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IOrderFeedAPI _orderFeedAPI;
+        private readonly IIOServiceContext _context;
 
-        public KlaviyoAPI(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, IOrderFeedAPI orderFeedAPI)
+        public KlaviyoAPI(IHttpContextAccessor httpContextAccessor, IHttpClientFactory clientFactory, IOrderFeedAPI orderFeedAPI, IIOServiceContext context)
         {
-            this._httpContextAccessor = httpContextAccessor ??
-                                        throw new ArgumentNullException(nameof(httpContextAccessor));
+          this._httpContextAccessor = httpContextAccessor ??
+                                      throw new ArgumentNullException(nameof(httpContextAccessor));
 
-            this._clientFactory = clientFactory ??
-                                  throw new ArgumentNullException(nameof(clientFactory));
+          this._clientFactory = clientFactory ??
+                                throw new ArgumentNullException(nameof(clientFactory));
 
-            this._orderFeedAPI = orderFeedAPI ??
-                                  throw new ArgumentNullException(nameof(orderFeedAPI));
+          this._orderFeedAPI = orderFeedAPI ??
+                                throw new ArgumentNullException(nameof(orderFeedAPI));
+
+          this._context = context ??
+                                throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<bool> ProcessNotification(HookNotification hookNotification)
@@ -71,6 +76,7 @@ namespace Klaviyo.Services
                         //    break;
                         default:
                             Console.WriteLine($"State {hookNotification.State} not implemeted.");
+                            _context.Vtex.Logger.Info("ProcessNotification", null, $"State {hookNotification.State} not implemeted.");
                             break;
                     }
                     break;
@@ -78,6 +84,7 @@ namespace Klaviyo.Services
                     break;
                 default:
                     Console.WriteLine($"Domain {hookNotification.Domain} not implemeted.");
+                    _context.Vtex.Logger.Info("ProcessNotification", null, $"Domain {hookNotification.Domain} not implemeted.");
                     break;
             }
 
@@ -109,6 +116,7 @@ namespace Klaviyo.Services
             var response = await client.SendAsync(request);
             string responseContent = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"[-] SendEvent Response {response.StatusCode} Content = '{responseContent}' [-]");
+            _context.Vtex.Logger.Info("SendEvent", null, $"[{response.StatusCode}] {responseContent}");
 
             // Responses from requests made to the Identify or Track APIs will return either 0 or 1.
             // A 1 response means your data was received successfully and is queued for processing.
@@ -210,10 +218,13 @@ namespace Klaviyo.Services
 
                     klaviyoEvent.Properties.Items.Add(klaviyoItem);
                 }
+
+                _context.Vtex.Logger.Info("BuildEvent", null, JsonConvert.SerializeObject(klaviyoEvent));
             }
             else
             {
                 Console.WriteLine($"Could not load order {orderId}");
+                _context.Vtex.Logger.Info("BuildEvent", null, $"Could not load order {orderId}");
             }
 
             return klaviyoEvent;

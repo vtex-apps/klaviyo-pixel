@@ -36,3 +36,6 @@ lib
 *.orig
 .vscode
 package-lock.json
+/.vs/Klaviyo/v16/.suo
+/dotnet/obj/Debug/netcoreapp3.0
+/dotnet/obj
