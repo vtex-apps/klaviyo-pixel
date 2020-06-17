@@ -110,7 +110,7 @@ namespace Klaviyo.Services
                 //Console.WriteLine($"Token = '{authToken}'");
                 if (authToken != null)
                 {
-                    //request.Headers.Add(Constants.AUTHORIZATION_HEADER_NAME, authToken);
+                    request.Headers.Add(Constants.AUTHORIZATION_HEADER_NAME, authToken);
                     request.Headers.Add(Constants.VTEX_ID_HEADER_NAME, authToken);
                     request.Headers.Add(Constants.PROXY_AUTHORIZATION_HEADER_NAME, authToken);
                 }
