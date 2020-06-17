@@ -1,4 +1,4 @@
-﻿namespace service.Controllers
+namespace service.Controllers
 {
     using System;
     using System.Net;
@@ -36,6 +36,7 @@
 
         public async Task<IActionResult> ProcessNotification()
         {
+            bool success = false;
             ActionResult status = BadRequest();
             if ("post".Equals(HttpContext.Request.Method, StringComparison.OrdinalIgnoreCase))
             {
@@ -45,22 +46,23 @@
                 if (notification != null && notification.hookConfig != null && notification.hookConfig == Constants.HookPing)
                 {
                     status = Ok();
+                    success = true;
                 }
                 else
                 {
                     HookNotification hookNotification = JsonConvert.DeserializeObject<HookNotification>(bodyAsText);
-                    bool success = await _klaviyoAPI.ProcessNotification(hookNotification);
+                    success = await _klaviyoAPI.ProcessNotification(hookNotification);
                     status = success ? Ok() : StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
-                _context.Vtex.Logger.Info("ProcessNotification", null, $"Status [{status}] for {bodyAsText}");
+                _context.Vtex.Logger.Info("ProcessNotification", null, $"Success? [{success}] for {bodyAsText}");
             }
             else
             {
                 Console.WriteLine($"[Hook Notification] : '{HttpContext.Request.Method}'");
             }
 
-            Console.WriteLine($"[Process Notification] : '{status}'");
+            Console.WriteLine($"[Process Notification] : '{success}'");
             return Json(status);
         }
 
