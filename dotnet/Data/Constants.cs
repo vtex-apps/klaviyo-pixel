@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,7 +28,7 @@ namespace Klaviyo.Data
         public const string ENVIRONMENT = "vtexcommercestable";
         public const string VTEX_ID_HEADER_NAME = "VtexIdclientAutCookie";
         public const string HEADER_VTEX_WORKSPACE = "X-Vtex-Workspace";
-        public const string APP_SETTINGS = "vtex.klaviyo-notification";
+        public const string APP_SETTINGS = "vtex.klaviyo-pixel";
         public const string ACCEPT = "Accept";
         public const string CONTENT_TYPE = "Content-Type";
         public const string HTTP_FORWARDED_HEADER = "HTTP_X_FORWARDED_FOR";
