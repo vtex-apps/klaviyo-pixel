@@ -80,7 +80,7 @@ namespace Klaviyo.Models
         public string GiftRegistryData { get; set; }
 
         [JsonProperty("marketingData")]
-        public string MarketingData { get; set; }
+        public object MarketingData { get; set; }
 
         [JsonProperty("ratesAndBenefitsData")]
         public RatesAndBenefitsData RatesAndBenefitsData { get; set; }
