@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Only use Rates and Benefits name for Discount Code field
+
 ## [0.0.4] - 2020-06-17
 
 ### Fixed
