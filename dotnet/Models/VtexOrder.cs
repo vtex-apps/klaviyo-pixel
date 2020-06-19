@@ -116,7 +116,7 @@ namespace Klaviyo.Models
         public ChangesAttachment ChangesAttachment { get; set; }
 
         [JsonProperty("openTextField")]
-        public string OpenTextField { get; set; }
+        public object OpenTextField { get; set; }
 
         [JsonProperty("roundingError")]
         public int RoundingError { get; set; }
@@ -738,7 +738,7 @@ namespace Klaviyo.Models
         public string AdditionalInfo { get; set; }
 
         [JsonProperty("address")]
-        public string Address { get; set; }
+        public OrderAddress Address { get; set; }
 
         [JsonProperty("dockId")]
         public string DockId { get; set; }
