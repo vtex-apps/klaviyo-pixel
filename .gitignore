@@ -41,3 +41,4 @@ package-lock.json
 /dotnet/obj
 /dotnet/bin/Debug/netcoreapp3.0
 /.vs/Klaviyo/config
+/.vs/Klaviyo/DesignTimeBuild

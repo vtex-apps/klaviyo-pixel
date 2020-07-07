@@ -49,23 +49,30 @@ namespace Klaviyo.Services
             string orderId = hookNotification.OrderId;
             DateTimeOffset lastChange = hookNotification.LastChange;
             KlaviyoEvent klaviyoEvent;
+            VtexOrder vtexOrder = await _orderFeedAPI.GetOrderInformation(orderId);
             switch (hookNotification.Domain)
             {
                 case Constants.Domain.Fulfillment:
                     switch (hookNotification.State)
                     {
                         case Constants.Status.ReadyForHandling:
-                            klaviyoEvent = await BuildEvent(orderId, Constants.Events.PlacedOrder, lastChange);
+                            klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.PlacedOrder, lastChange);
                             if (klaviyoEvent != null)
                             {
                                 success = await SendEvent(klaviyoEvent);
-                                klaviyoEvent.Event = Constants.Events.OrderedProduct;
-                                success = success && await SendEvent(klaviyoEvent);
+                                // Send each item as a separate event
+                                foreach(Item item in vtexOrder.Items)
+                                {
+                                    VtexOrder order = vtexOrder;
+                                    order.Items = new List<Item> { item };
+                                    klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.OrderedProduct, lastChange);
+                                    success = success && await SendEvent(klaviyoEvent);
+                                }
                             }
 
                             break;
                         case Constants.Status.Invoiced:
-                            klaviyoEvent = await BuildEvent(orderId, Constants.Events.FulfilledOrder, lastChange);
+                            klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.FulfilledOrder, lastChange);
                             if (klaviyoEvent != null)
                             {
                                 success = await SendEvent(klaviyoEvent);
@@ -129,10 +136,9 @@ namespace Klaviyo.Services
             return success;
         }
 
-        public async Task<KlaviyoEvent> BuildEvent(string orderId, string eventType, DateTimeOffset lastChange)
+        public async Task<KlaviyoEvent> BuildEvent(VtexOrder vtexOrder, string eventType, DateTimeOffset lastChange)
         {
             KlaviyoEvent klaviyoEvent = null;
-            VtexOrder vtexOrder = await _orderFeedAPI.GetOrderInformation(orderId);
             if (vtexOrder != null)
             {
                 MerchantSettings merchantSettings = await _orderFeedAPI.GetMerchantSettings();
@@ -158,7 +164,7 @@ namespace Klaviyo.Services
                         Categories = vtexOrder.Items.Select(i => i.AdditionalInfo.CategoriesIds.Replace(@"\", string.Empty)).ToList(),
                         DiscountCode = string.Join(',', vtexOrder.RatesAndBenefitsData.RateAndBenefitsIdentifiers.Select(r => r.Name).ToList()),
                         DiscountValue = vtexOrder.Totals.Where(t => t.Name == "Discounts").Select(d => d.Value).FirstOrDefault(),
-                        EventId = orderId,
+                        EventId = vtexOrder.OrderId,
                         ItemNames = vtexOrder.Items.Select(i => i.Name).ToList(),
                         Items = new List<KlaviyoItem>(),
                         Value = ToDollar(vtexOrder.Totals.Sum(t => t.Value))
@@ -223,8 +229,8 @@ namespace Klaviyo.Services
             }
             else
             {
-                Console.WriteLine($"Could not load order {orderId}");
-                _context.Vtex.Logger.Info("BuildEvent", null, $"Could not load order {orderId}");
+                Console.WriteLine($"Could not load order {vtexOrder.OrderId}");
+                _context.Vtex.Logger.Info("BuildEvent", null, $"Could not load order {vtexOrder.OrderId}");
             }
 
             return klaviyoEvent;

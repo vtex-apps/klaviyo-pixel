@@ -70,7 +70,8 @@ namespace service.Controllers
         {
             Console.WriteLine($"[Build Event]");
             DateTimeOffset dateTimeOffset = new DateTimeOffset(DateTime.Now);
-            KlaviyoEvent klaviyoEvent = await _klaviyoAPI.BuildEvent(orderId, eventType, dateTimeOffset);
+            VtexOrder vtexOrder = await _orderFeedAPI.GetOrderInformation(orderId);
+            KlaviyoEvent klaviyoEvent = await _klaviyoAPI.BuildEvent(vtexOrder, eventType, dateTimeOffset);
             return Json(klaviyoEvent);
         }
     }
