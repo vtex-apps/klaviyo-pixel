@@ -98,6 +98,67 @@ namespace Klaviyo.Services
             return success;
         }
 
+        public async Task<bool> ProcessNotification(AllStatesNotification allStatesNotification)
+        {
+            bool success = false;
+            // Use our server - side Track API for the following:
+            // Placed Order - When an order successfully processes on your system
+            // Ordered Product - An event for each item in a processed order
+            // Fulfilled Order - When an order is sent to the customer
+            // Cancelled Order - When a customer cancels their order
+            // Refunded Order - When a customer’s order is refunded
+            string orderId = allStatesNotification.OrderId;
+            DateTimeOffset lastChange = allStatesNotification.LastChangeDate;
+            KlaviyoEvent klaviyoEvent;
+            VtexOrder vtexOrder = await _orderFeedAPI.GetOrderInformation(orderId);
+            switch (allStatesNotification.Domain)
+            {
+                case Constants.Domain.Fulfillment:
+                    switch (allStatesNotification.CurrentState)
+                    {
+                        case Constants.Status.ReadyForHandling:
+                            klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.PlacedOrder, lastChange);
+                            if (klaviyoEvent != null)
+                            {
+                                success = await SendEvent(klaviyoEvent);
+                                // Send each item as a separate event
+                                foreach (Item item in vtexOrder.Items)
+                                {
+                                    VtexOrder order = vtexOrder;
+                                    order.Items = new List<Item> { item };
+                                    klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.OrderedProduct, lastChange);
+                                    success = success && await SendEvent(klaviyoEvent);
+                                }
+                            }
+
+                            break;
+                        case Constants.Status.Invoiced:
+                            klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.FulfilledOrder, lastChange);
+                            if (klaviyoEvent != null)
+                            {
+                                success = await SendEvent(klaviyoEvent);
+                            }
+
+                            break;
+                        //case Constants.Status.Canceled:
+                        //    break;
+                        default:
+                            Console.WriteLine($"State {allStatesNotification.CurrentState} not implemeted.");
+                            _context.Vtex.Logger.Info("ProcessNotification", null, $"State {allStatesNotification.CurrentState} not implemeted.");
+                            break;
+                    }
+                    break;
+                case Constants.Domain.Marketplace:
+                    break;
+                default:
+                    Console.WriteLine($"Domain {allStatesNotification.Domain} not implemeted.");
+                    _context.Vtex.Logger.Info("ProcessNotification", null, $"Domain {allStatesNotification.Domain} not implemeted.");
+                    break;
+            }
+
+            return success;
+        }
+
         public async Task<bool> SendEvent(KlaviyoEvent klaviyoEvent)
         {
             bool success = false;
