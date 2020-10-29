@@ -26,19 +26,14 @@
     "type": "object",
     "properties": {
       "appId": {
-        "title": "Company ID",
-        "description": "Enter your Klaviyo Company ID",
+        "title": "Company ID / Public API Key",
+        "description": "Enter your Klaviyo Company ID, sometimes also referred to as a Public API Key",
         "type": "string"
       },
       "useRefId": {
         "title": "Use Reference ID",
         "description": "Use Reference ID rather than Product ID when tracking products",
         "type": "boolean"
-      },
-      "publicApiKey": {
-        "title": "Public API Key",
-        "description": "Enter your Public API Key for Klaviyo's server-side API",
-        "type": "string"
       },
       "productRootUrl": {
         "title": "Product Root URL",
