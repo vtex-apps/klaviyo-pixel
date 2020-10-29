@@ -4,15 +4,15 @@
 
 This app enables basic Klaviyo tracking for your VTEX store, including these JavaScript Track API events:
 
-`Active on Site` - When someone visits your website
-`Viewed Product` - When someone views a product
-`Added to Cart` - When someone adds an item to their cart
+- `Active on Site` - When someone visits your website
+- `Viewed Product` - When someone views a product
+- `Added to Cart` - When someone adds an item to their cart
 
 and these server-side Track API events:
 
-`Placed Order` - When an order successfully processes on your system
-`Ordered Product` - An event for each item in a processed order
-`Fulfilled Order` - When an order is sent to the customer
+- `Placed Order` - When an order successfully processes on your system
+- `Ordered Product` - An event for each item in a processed order
+- `Fulfilled Order` - When an order is sent to the customer
 
 ## Configuration
 
