@@ -231,7 +231,7 @@ namespace Klaviyo.Services
                         Value = ToDollar(vtexOrder.Totals.Sum(t => t.Value))
                     },
                     //Time = lastChange.UtcTicks,
-                    Token = merchantSettings.PublicApiKey
+                    Token = merchantSettings.AppId
                 };
 
                 foreach (Item item in vtexOrder.Items)
