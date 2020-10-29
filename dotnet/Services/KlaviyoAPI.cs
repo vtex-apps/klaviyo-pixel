@@ -100,7 +100,7 @@ namespace Klaviyo.Services
 
         public async Task<bool> ProcessNotification(AllStatesNotification allStatesNotification)
         {
-            bool success = false;
+            bool success = true;
             // Use our server - side Track API for the following:
             // Placed Order - When an order successfully processes on your system
             // Ordered Product - An event for each item in a processed order
