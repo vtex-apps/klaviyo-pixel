@@ -19,9 +19,8 @@ and these server-side Track API events:
 1. [Install](https://vtex.io/docs/recipes/store/installing-an-app) this app (`vtex.klaviyo-pixel`) in the desired account
 2. In your admin dashboard, go to **Apps** > **Klaviyo Integration** and input the following settings:
 
-- `Company ID`: Enter your Klaviyo Company ID.
+- `Company ID`: Enter your Klaviyo Company ID, sometimes also referred to as a Public API Key.
 - `Use Reference ID`: Check this box to use Reference IDs rather than Product IDs when tracking products.
-- `Public API Key`: Enter your Klaviyo Public API Key (used for server-side API requests).
 - `Product Root URL`: Enter your store's root path for product links (i.e. `https://www.store.com` or `https://www.store.com/us`). In the server-side Track API requests this will be combined with the relative link for each product.
 
 ## Checkout Integration
