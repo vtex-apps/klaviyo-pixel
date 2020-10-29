@@ -36,6 +36,7 @@ namespace service.Controllers
 
         public async Task<IActionResult> ProcessNotification()
         {
+            return Ok();
             bool success = false;
             ActionResult status = BadRequest();
             if ("post".Equals(HttpContext.Request.Method, StringComparison.OrdinalIgnoreCase))

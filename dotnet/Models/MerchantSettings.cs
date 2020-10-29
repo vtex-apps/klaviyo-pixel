@@ -6,7 +6,7 @@ namespace Klaviyo.Models
 {
     public class MerchantSettings
     {
-        public string PublicApiKey { get; set; }
+        public string AppId { get; set; }
         public string ProductRootUrl { get; set; }
     }
 }

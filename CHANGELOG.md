@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Add Event Broadcast listener
+- Update docs with Checkout Integration instructions
+
+### Fixed
+
+- Eliminate Public API Key app settings field (alternate name for Company ID)
+
 ## [0.0.8] - 2020-07-07
 
 ### Fixed
