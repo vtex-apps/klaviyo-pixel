@@ -125,7 +125,7 @@ namespace Klaviyo.Models
         public string OrderFormId { get; set; }
 
         [JsonProperty("commercialConditionData")]
-        public string CommercialConditionData { get; set; }
+        public object CommercialConditionData { get; set; }
 
         [JsonProperty("isCompleted")]
         public bool IsCompleted { get; set; }
@@ -284,7 +284,7 @@ namespace Klaviyo.Models
         public ItemAttachment ItemAttachment { get; set; }
 
         [JsonProperty("attachments")]
-        public List<string> Attachments { get; set; }
+        public object Attachments { get; set; }
 
         [JsonProperty("quantity")]
         public int Quantity { get; set; }
