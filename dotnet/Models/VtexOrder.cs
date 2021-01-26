@@ -131,7 +131,7 @@ namespace Klaviyo.Models
         public bool IsCompleted { get; set; }
 
         [JsonProperty("customData")]
-        public string CustomData { get; set; }
+        public object CustomData { get; set; }
 
         [JsonProperty("storePreferencesData")]
         public StorePreferencesData StorePreferencesData { get; set; }
