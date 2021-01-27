@@ -326,7 +326,7 @@ namespace Klaviyo.Models
         public List<string> Params { get; set; }
 
         [JsonProperty("offerings")]
-        public List<string> Offerings { get; set; }
+        public object Offerings { get; set; }
 
         [JsonProperty("sellerSku")]
         public string SellerSku { get; set; }

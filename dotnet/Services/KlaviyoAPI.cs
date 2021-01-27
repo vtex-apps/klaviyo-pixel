@@ -140,8 +140,14 @@ namespace Klaviyo.Services
                             }
 
                             break;
-                        //case Constants.Status.Canceled:
-                        //    break;
+                        case Constants.Status.Canceled:
+                            klaviyoEvent = await BuildEvent(vtexOrder, Constants.Events.Canceled, lastChange);
+                            if (klaviyoEvent != null)
+                            {
+                                success = await SendEvent(klaviyoEvent);
+                            }
+
+                            break;
                         default:
                             Console.WriteLine($"State {allStatesNotification.CurrentState} not implemeted.");
                             _context.Vtex.Logger.Info("ProcessNotification", null, $"State {allStatesNotification.CurrentState} not implemeted.");
