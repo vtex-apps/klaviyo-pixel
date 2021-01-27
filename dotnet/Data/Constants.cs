@@ -71,6 +71,7 @@ namespace Klaviyo.Data
             public const string PlacedOrder = "Placed Order";
             public const string FulfilledOrder = "Fulfilled Order";
             public const string OrderedProduct = "Ordered Product";
+            public const string Canceled = "Order Canceled";
         }
 
         public class Domain
