@@ -2,12 +2,13 @@ import { canUseDOM } from 'vtex.render-runtime'
 
 import { CartChangedItems, CartItem, PixelMessage } from './typings/events'
 import {
-  getCartProductId, getCartSkuId,
+  getCartProductId,
+  getCartSkuId,
   getCategory,
   getProductId,
   mapSelectedSkuToProductView,
-  sendAddToCartEvent
-} from "./modules/pixelHelper";
+  sendAddToCartEvent,
+} from './modules/pixelHelper'
 
 declare const _learnq: any
 let newItems: CartItem[] = []
@@ -72,7 +73,7 @@ export function handleEvents(e: PixelMessage) {
       const { items } = e.data
       newItems = items
       if (isDefaultAddToCartEventTrue) {
-        sendAddToCartEvent(_learnq, items)
+        sendAddToCartEvent({ learnq: _learnq, items })
       }
       break
     }
@@ -98,7 +99,7 @@ export function handleEvents(e: PixelMessage) {
         }
       })
       if (!isDefaultAddToCartEventTrue) {
-        sendAddToCartEvent(_learnq, items, allItems, itemNames)
+        sendAddToCartEvent({ learnq: _learnq, items, allItems, itemNames })
       }
       break
     }
