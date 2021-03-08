@@ -2,6 +2,7 @@
   ;(function() {
     var appId = '{{settings.appId}}'
     var useRefIdSetting = '{{settings.useRefId}}'
+    var defaultAddToCartEvent = '{{settings.defaultAddToCartEvent}}'
 
     if (!appId) {
       console.error(
@@ -10,6 +11,7 @@
       return
     }
     ;(function e() {
+      window.__defaultAddToCartEvent = defaultAddToCartEvent
       window.__klaviyo_useRefIdSetting = useRefIdSetting
         ? JSON.parse(useRefIdSetting)
         : false

@@ -291,3 +291,17 @@ export interface CommertialOffer {
   ListPrice: number
   AvailableQuantity: number
 }
+
+export interface CartChangedItems {
+    ItemFormattedPrice: number;
+    RowTotal: number;
+    ProductName: string;
+    ProductCategories: string[];
+    ItemPrice: number;
+    Quantity: number;
+    ProductAbsoluteURL: string;
+    ImageURL: string;
+    ProductID: string;
+    SKU: string;
+    ProductURL: string
+}

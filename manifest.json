@@ -39,6 +39,11 @@
         "title": "Product Root URL",
         "description": "Root path for product links (i.e. https://www.store.com or https://www.store.com/us)",
         "type": "string"
+      },
+      "defaultAddToCartEvent": {
+        "title": "Default Add To Cart Event",
+        "description": "True - Send the add to cart event everytime an item is added to cart. False - send only when the cart changes",
+        "type": "boolean"
       }
     }
   },
