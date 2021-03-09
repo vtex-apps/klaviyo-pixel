@@ -6,7 +6,6 @@ import {
   getCartSkuId,
   getCategory,
   getProductId,
-  mapSelectedSkuToProductView,
   sendAddToCartEvent,
 } from './modules/pixelHelper'
 
@@ -37,7 +36,7 @@ export function handleEvents(e: PixelMessage) {
         ProductID: getProductId(product),
         Categories: product.categories,
         ConcatenatedCategories: getCategory(product.categories)?.split('/'),
-        Sku: mapSelectedSkuToProductView(product?.selectedSku),
+        SKU: product?.selectedSku?.itemId,
         ImageURL: product.selectedSku?.imageUrl,
         URL: `https://${window.location.hostname}${
           window.__RUNTIME__.rootPath ? `/${window.__RUNTIME__.rootPath}` : ''

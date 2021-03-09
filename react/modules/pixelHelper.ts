@@ -1,9 +1,4 @@
-import {
-  CartChangedItems,
-  CartItem,
-  Item,
-  ProductDetail,
-} from '../typings/events'
+import { CartChangedItems, CartItem, ProductDetail } from '../typings/events'
 
 export const removeStartAndEndSlash = (category?: string) =>
   category?.replace(/^\/|\/$/g, '')
@@ -15,15 +10,6 @@ export function getCategory(rawCategories: string[]) {
 
   return removeStartAndEndSlash(rawCategories?.[0])
 }
-
-export const mapSelectedSkuToProductView = (item: Item) => ({
-  itemId: item?.itemId,
-  name: item?.name,
-  imageUrl: item?.imageUrl,
-  ean: item?.ean,
-  referenceId: item?.referenceId,
-  seller: item?.seller,
-})
 
 export const getProductId = (product: ProductDetail) => {
   if (window.__klaviyo_useRefIdSetting) {
