@@ -211,6 +211,36 @@ namespace Klaviyo.Services
                 MerchantSettings merchantSettings = await _orderFeedAPI.GetMerchantSettings();
                 klaviyoEvent = new KlaviyoEvent
                 {
+                    BillingAddress = new Address
+                    {
+                        Address1 = vtexOrder.ShippingData.Address.Street,
+                        Address2 = vtexOrder.ShippingData.Address.Number,
+                        City = vtexOrder.ShippingData.Address.City,
+                        Country = vtexOrder.ShippingData.Address.Country,
+                        FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
+                        LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
+                        Region = vtexOrder.ShippingData.Address.State,
+                        Zip = vtexOrder.ShippingData.Address.PostalCode,
+                        Company = null,
+                        CountryCode = vtexOrder.ShippingData.Address.Country,
+                        Phone = vtexOrder.ClientProfileData.Phone,
+                        RegionCode = vtexOrder.ShippingData.Address.State
+                    },
+                    ShippingAddress = new Address
+                    {
+                        Address1 = vtexOrder.ShippingData.Address.Street,
+                        Address2 = vtexOrder.ShippingData.Address.Number,
+                        City = vtexOrder.ShippingData.Address.City,
+                        Country = vtexOrder.ShippingData.Address.Country,
+                        FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
+                        LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
+                        Region = vtexOrder.ShippingData.Address.State,
+                        Zip = vtexOrder.ShippingData.Address.PostalCode,
+                        Company = null,
+                        CountryCode = vtexOrder.ShippingData.Address.Country,
+                        Phone = vtexOrder.ClientProfileData.Phone,
+                        RegionCode = vtexOrder.ShippingData.Address.State
+                    },
                     CustomerProperties = new CustomerProperties
                     {
                         Address1 = vtexOrder.ShippingData.Address.Street,
@@ -244,21 +274,6 @@ namespace Klaviyo.Services
                 {
                     KlaviyoItem klaviyoItem = new KlaviyoItem
                     {
-                        BillingAddress = new Address
-                        {
-                            Address1 = vtexOrder.ShippingData.Address.Street,
-                            Address2 = vtexOrder.ShippingData.Address.Number,
-                            City = vtexOrder.ShippingData.Address.City,
-                            Country = vtexOrder.ShippingData.Address.Country,
-                            FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
-                            LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
-                            Region = vtexOrder.ShippingData.Address.State,
-                            Zip = vtexOrder.ShippingData.Address.PostalCode,
-                            Company = null,
-                            CountryCode = vtexOrder.ShippingData.Address.Country,
-                            Phone = vtexOrder.ClientProfileData.Phone,
-                            RegionCode = vtexOrder.ShippingData.Address.State
-                        },
                         Brand = item.AdditionalInfo.BrandName,
                         Categories = new Dictionary<string, string>(),
                         ImageUrl = item.ImageUrl.AbsoluteUri,
@@ -268,21 +283,6 @@ namespace Klaviyo.Services
                         ProductUrl = $"{merchantSettings.ProductRootUrl}{item.DetailUrl}",
                         Quantity = item.Quantity,
                         RowTotal = ToDollar(item.Price * item.Quantity),
-                        ShippingAddress = new Address
-                        {
-                            Address1 = vtexOrder.ShippingData.Address.Street,
-                            Address2 = vtexOrder.ShippingData.Address.Number,
-                            City = vtexOrder.ShippingData.Address.City,
-                            Country = vtexOrder.ShippingData.Address.Country,
-                            FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
-                            LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
-                            Region = vtexOrder.ShippingData.Address.State,
-                            Zip = vtexOrder.ShippingData.Address.PostalCode,
-                            Company = null,
-                            CountryCode = vtexOrder.ShippingData.Address.Country,
-                            Phone = vtexOrder.ClientProfileData.Phone,
-                            RegionCode = vtexOrder.ShippingData.Address.State
-                        },
                         Sku = item.SellerSku
                     };
 
