@@ -1,37 +1,18 @@
 import { canUseDOM } from 'vtex.render-runtime'
 
-import { PixelMessage, ProductDetail, CartItem } from './typings/events'
+import { CartItem, PixelMessage } from './typings/events'
+import { sendExtendedEcommerceEvents } from './modules/extendedEcommerceEvents'
+import push from './modules/push'
+import { getCartProductId, getCartSkuId, getProductId } from "./modules/pixelHelper";
 
-declare const _learnq: any
 let newItems: CartItem[] = []
 
-function getProductId(product: ProductDetail) {
-  if (window.__klaviyo_useRefIdSetting) {
-    return product.productReference
-  }
-  return product.productId
-}
-
-function getCartProductId(product: CartItem) {
-  if (window.__klaviyo_useRefIdSetting) {
-    return product.productRefId
-  }
-  return product.productId
-}
-
-function getCartSkuId(product: CartItem) {
-  if (window.__klaviyo_useRefIdSetting) {
-    return product.referenceId
-  }
-  return product.skuId
-}
-
 export function handleEvents(e: PixelMessage) {
+  sendExtendedEcommerceEvents(e)
   switch (e.data.eventName) {
     case 'vtex:userData': {
       const { email, firstName, lastName } = e.data
-      const learnq = _learnq || []
-      learnq.push([
+      push([
         'identify',
         {
           $email: email,
@@ -43,7 +24,6 @@ export function handleEvents(e: PixelMessage) {
     }
     case 'vtex:productView': {
       const { product } = e.data
-      const learnq = _learnq || []
       const item = {
         ProductName: product.productName,
         ProductID: getProductId(product),
@@ -60,9 +40,9 @@ export function handleEvents(e: PixelMessage) {
 
       if (!item.Price) break
 
-      learnq.push(['track', 'Viewed Product', item])
+      push(['track', 'Viewed Product', item])
 
-      learnq.push([
+      push([
         'trackViewedItem',
         {
           Title: item.ProductName,
@@ -104,7 +84,7 @@ export function handleEvents(e: PixelMessage) {
         }
       })
       newItems.forEach(item => {
-        _learnq.push([
+        push([
           'track',
           'Added to Cart',
           {

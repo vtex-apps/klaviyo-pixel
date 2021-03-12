@@ -14,6 +14,9 @@ export interface PixelMessage extends MessageEvent {
     | SearchPageInfoData
     | UserData
     | CartIdData
+    | CategoryViewData
+    | AddToWishlistData
+    | RemoveFromWishlistData
 }
 
 export interface EventData {
@@ -138,6 +141,25 @@ export interface ProductImpressionData extends EventData {
   product?: ProductSummary // deprecated, use impressions list!
   position?: number // deprecated, use impressions list!
   list: string
+}
+
+export interface CategoryViewData extends EventData {
+  event: 'categoryView'
+  eventName: 'vtex:categoryView'
+  currency: string
+  products: ProductMetaData[];
+}
+
+export interface AddToWishlistData extends EventData {
+  event: 'removeFromWishlist'
+  eventName: 'vtex:removeFromWishlist'
+  wishlistEventObject: IWishlistEventObject;
+}
+
+export interface RemoveFromWishlistData extends EventData {
+  event: 'addToWishlist'
+  eventName: 'vtex:addToWishlist'
+  wishlistEventObject: IWishlistEventObject;
 }
 
 interface CartItem {
@@ -290,4 +312,19 @@ export interface CommertialOffer {
   Price: number
   ListPrice: number
   AvailableQuantity: number
+}
+
+export interface IWishlistEventObject {
+  action?: string
+  button_type?: string
+  page_type?: string
+  product_id?: string
+  product_title?: string
+  item_price?: number
+  item_quantity?: number
+  product_brand?: string
+  categories_path?: string
+  category_level_1?: string
+  category_level_2?: string
+  category_level_3?: string
 }
