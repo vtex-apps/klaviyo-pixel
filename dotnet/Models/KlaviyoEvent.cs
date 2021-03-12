@@ -22,12 +22,6 @@ namespace Klaviyo.Models
 
         [JsonProperty("time")]
         public long Time { get; set; }
-
-        [JsonProperty("billing_address")]
-        public Address BillingAddress { get; set; }
-
-        [JsonProperty("shipping_address")]
-        public Address ShippingAddress { get; set; }
     }
 
     public class CustomerProperties
@@ -122,6 +116,11 @@ namespace Klaviyo.Models
         [JsonProperty("Brand")]
         public string Brand { get; set; }
 
+        [JsonProperty("billing_address")]
+        public Address BillingAddress { get; set; }
+
+        [JsonProperty("shipping_address")]
+        public Address ShippingAddress { get; set; }
     }
 
     public class Address

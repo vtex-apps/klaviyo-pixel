@@ -32,20 +32,15 @@ export const getCartSkuId = (product: CartItem) => {
   return product.skuId
 }
 
-export const sendAddToCartEvent = ({
-  learnq,
-  items,
-  allItems,
-  itemNames,
-}: {
-  learnq: any
-  items: CartItem[]
-  allItems?: CartChangedItems[]
-  itemNames?: string[]
-}) => {
+export const sendAddToCartEvent = (
+  learnq: any,
+  items: CartItem[],
+  itemNames?: string[],
+  allItems?: CartChangedItems[],
+) => {
   items.forEach(item => {
     const addedToCartItems = {
-      $value: item.price,
+      $value: item.price / 100,
       AddedItemProductName: item.name,
       AddedItemProductID: getCartProductId(item),
       AddedItemSKU: getCartSkuId(item),
@@ -60,7 +55,7 @@ export const sendAddToCartEvent = ({
       CheckoutURL: `https://${window.location.hostname}/${
         window.__RUNTIME__.rootPath ? `${window.__RUNTIME__.rootPath}/` : ''
       }checkout/`,
-      Items: allItems,
+      Items: allItems?.length ? allItems : items,
     }
     learnq.push(['track', 'Added to Cart', addedToCartItems])
   })

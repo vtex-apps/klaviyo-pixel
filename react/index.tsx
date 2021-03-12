@@ -70,9 +70,12 @@ export function handleEvents(e: PixelMessage) {
     }
     case 'vtex:addToCart': {
       const { items } = e.data
+      const itemNames = items.map(item => {
+        return item.name
+      })
       newItems = items
       if (isDefaultAddToCartEventTrue) {
-        sendAddToCartEvent({ learnq: _learnq, items })
+        sendAddToCartEvent(_learnq, items, itemNames)
       }
       break
     }
@@ -98,7 +101,7 @@ export function handleEvents(e: PixelMessage) {
         }
       })
       if (!isDefaultAddToCartEventTrue) {
-        sendAddToCartEvent({ learnq: _learnq, items, allItems, itemNames })
+        sendAddToCartEvent(_learnq, newItems, itemNames, allItems)
       }
       break
     }
