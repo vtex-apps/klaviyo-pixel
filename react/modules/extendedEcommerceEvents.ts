@@ -55,7 +55,6 @@ export const sendExtendedEcommerceEvents = (e: PixelMessage) => {
                 Location: e.data.pageUrl,
                 Path: e.data.pageUrl.split('.com')?.[1] || '/'
             }
-            console.log(pageViewInfoBody)
             push(['track', 'Page View', pageViewInfoBody])
             return
         }
