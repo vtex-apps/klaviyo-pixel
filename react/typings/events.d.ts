@@ -145,6 +145,7 @@ interface CartItem {
   skuId: string
   variant: string
   price: number
+  priceIsInt: boolean
   name: string
   quantity: number
   productRefId: string
@@ -293,7 +294,6 @@ export interface CommertialOffer {
 }
 
 export interface CartChangedItems {
-  ItemFormattedPrice: number
   RowTotal: number
   ProductName: string
   ProductCategories: string[]

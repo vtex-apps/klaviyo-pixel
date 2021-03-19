@@ -10,10 +10,9 @@ import {
 } from './modules/pixelHelper'
 
 declare const _learnq: any
-let newItems: CartItem[] = []
+const newItems: CartItem[] = []
 
 export function handleEvents(e: PixelMessage) {
-  const isDefaultAddToCartEventTrue = window.__defaultAddToCartEvent === 'true'
   switch (e.data.eventName) {
     case 'vtex:userData': {
       const { email, firstName, lastName } = e.data
@@ -38,8 +37,8 @@ export function handleEvents(e: PixelMessage) {
         ConcatenatedCategories: getCategory(product.categories)?.split('/'),
         SKU: product?.selectedSku?.itemId,
         ImageURL: product.selectedSku?.imageUrl,
-        URL: `https://${window.location.hostname}${
-          window.__RUNTIME__.rootPath ? `/${window.__RUNTIME__.rootPath}` : ''
+        URL: `${window.location.origin}${
+          window.__RUNTIME__.rootPath ? `${window.__RUNTIME__.rootPath}` : ''
         }${product.detailUrl}`,
         Brand: product.brand,
         Price: product.selectedSku?.sellers[0]?.commertialOffer?.Price ?? 0,
@@ -48,9 +47,7 @@ export function handleEvents(e: PixelMessage) {
       }
 
       if (!item.Price) break
-
       learnq.push(['track', 'Viewed Product', item])
-
       learnq.push([
         'trackViewedItem',
         {
@@ -70,13 +67,7 @@ export function handleEvents(e: PixelMessage) {
     }
     case 'vtex:addToCart': {
       const { items } = e.data
-      const itemNames = items.map(item => {
-        return item.name
-      })
-      newItems = items
-      if (isDefaultAddToCartEventTrue) {
-        sendAddToCartEvent(_learnq, items, itemNames)
-      }
+      newItems.push(...items)
       break
     }
     case 'vtex:cartChanged': {
@@ -91,18 +82,18 @@ export function handleEvents(e: PixelMessage) {
           SKU: getCartSkuId(item),
           ProductName: item.name,
           Quantity: item.quantity,
-          ItemPrice: item.price,
-          ItemFormattedPrice: item.price / 100,
-          RowTotal: item.price * item.quantity,
+          ItemPrice: item.priceIsInt === true ? item.price / 100 : item.price,
+          RowTotal:
+            (item.priceIsInt === true ? item.price / 100 : item.price) *
+            item.quantity,
           ProductURL: item.detailUrl,
           ProductAbsoluteURL: window?.location?.origin + item.detailUrl,
           ImageURL: item.imageUrl,
           ProductCategories: item.category.split('/'),
         }
       })
-      if (!isDefaultAddToCartEventTrue) {
-        sendAddToCartEvent(_learnq, newItems, itemNames, allItems)
-      }
+      sendAddToCartEvent({ items: newItems, allItems, itemNames })
+      newItems.length = 0
       break
     }
     default: {

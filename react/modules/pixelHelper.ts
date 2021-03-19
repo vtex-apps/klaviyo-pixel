@@ -1,5 +1,7 @@
 import { CartChangedItems, CartItem, ProductDetail } from '../typings/events'
 
+declare const _learnq: any
+
 export const removeStartAndEndSlash = (category?: string) =>
   category?.replace(/^\/|\/$/g, '')
 
@@ -32,12 +34,16 @@ export const getCartSkuId = (product: CartItem) => {
   return product.skuId
 }
 
-export const sendAddToCartEvent = (
-  learnq: any,
-  items: CartItem[],
-  itemNames?: string[],
-  allItems?: CartChangedItems[],
-) => {
+export const sendAddToCartEvent = ({
+  items,
+  allItems,
+  itemNames,
+}: {
+  items: CartItem[]
+  allItems?: CartChangedItems[]
+  itemNames?: string[]
+}) => {
+  const learnq = _learnq || []
   items.forEach(item => {
     const addedToCartItems = {
       $value: item.price / 100,
@@ -47,14 +53,15 @@ export const sendAddToCartEvent = (
       AddedItemCategories: item.category.split('/'),
       AddedItemImageURL: item.imageUrl,
       AddedItemURL: item.detailUrl,
-      AddedItemAbsoluteURL: window?.location?.origin + item.detailUrl,
-      AddedItemPrice: item.price,
-      AddedItemFormattedPrice: item.price / 100,
+      AddedItemAbsoluteURL: `${window?.location?.origin}${
+        window.__RUNTIME__.rootPath ? `${window.__RUNTIME__.rootPath}` : ''
+      }${item.detailUrl}`,
+      AddedItemPrice: item.priceIsInt === true ? item.price / 100 : item.price,
       AddedItemQuantity: item.quantity,
       ItemNames: itemNames,
-      CheckoutURL: `https://${window.location.hostname}/${
-        window.__RUNTIME__.rootPath ? `${window.__RUNTIME__.rootPath}/` : ''
-      }checkout/`,
+      CheckoutURL: `${window.location.origin}${
+        window.__RUNTIME__.rootPath ? `${window.__RUNTIME__.rootPath}` : ''
+      }/checkout/`,
       Items: allItems?.length ? allItems : items,
     }
     learnq.push(['track', 'Added to Cart', addedToCartItems])
