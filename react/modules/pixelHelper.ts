@@ -1,6 +1,6 @@
 import { CartChangedItems, CartItem, ProductDetail } from '../typings/events'
+import push from './push'
 
-declare const _learnq: any
 
 export const removeStartAndEndSlash = (category?: string) =>
   category?.replace(/^\/|\/$/g, '')
@@ -46,7 +46,7 @@ export const sendAddToCartEvent = ({
   allItems?: CartChangedItems[]
   itemNames?: string[]
 }) => {
-  const learnq = _learnq || []
+
   items.forEach(item => {
     const addedToCartItems = {
       $value: item.price / 100,
@@ -67,7 +67,7 @@ export const sendAddToCartEvent = ({
       }/checkout/`,
       Items: allItems?.length ? allItems : items,
     }
-    learnq.push(['track', 'Added to Cart', addedToCartItems])
+    push(['track', 'Added to Cart', addedToCartItems])
   })
 }
 
