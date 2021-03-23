@@ -1,7 +1,7 @@
 {
   "name": "klaviyo-pixel",
   "vendor": "vtex",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "title": "Klaviyo Integration",
   "description": "Integration of Klaviyo Analytics",
   "billingOptions": {
@@ -42,7 +42,9 @@
       }
     }
   },
-  "registries": ["smartcheckout"],
+  "registries": [
+    "smartcheckout"
+  ],
   "policies": [
     {
       "name": "outbound-access",

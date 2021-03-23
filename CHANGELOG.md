@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-03-23
+
 ### Fixed
 
 - Improve pixel data sent to Klaviyo in `vtex:productView`, `vtex:addToCart` and `vtex:cartChanged` events
