@@ -167,6 +167,7 @@ interface CartItem {
   skuId: string
   variant: string
   price: number
+  priceIsInt: boolean
   name: string
   quantity: number
   productRefId: string
@@ -327,4 +328,17 @@ export interface IWishlistEventObject {
   category_level_1?: string
   category_level_2?: string
   category_level_3?: string
+}
+
+export interface CartChangedItems {
+  RowTotal: number
+  ProductName: string
+  ProductCategories: string[]
+  ItemPrice: number
+  Quantity: number
+  ProductAbsoluteURL: string
+  ImageURL: string
+  ProductID: string
+  SKU: string
+  ProductURL: string
 }
