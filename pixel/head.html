@@ -1,7 +1,6 @@
 <script>
   ;(function() {
     var appId = '{{settings.appId}}'
-    var useRefIdSetting = '{{settings.useRefId}}'
 
     if (!appId) {
       console.error(
@@ -10,8 +9,8 @@
       return
     }
     ;(function e() {
-      window.__klaviyo_useRefIdSetting = useRefIdSetting
-        ? JSON.parse(useRefIdSetting)
+      window.__klaviyo_useRefIdSetting = `{{settings.useRefId}}`
+        ? JSON.parse(`{{settings.useRefId}}`)
         : false
       var e = document.createElement('script')
       ;(e.type = 'text/javascript'),
