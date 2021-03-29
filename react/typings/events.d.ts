@@ -147,19 +147,19 @@ export interface CategoryViewData extends EventData {
   event: 'categoryView'
   eventName: 'vtex:categoryView'
   currency: string
-  products: ProductMetaData[];
+  products: ProductMetaData[]
 }
 
 export interface AddToWishlistData extends EventData {
   event: 'removeFromWishlist'
   eventName: 'vtex:removeFromWishlist'
-  wishlistEventObject: IWishlistEventObject;
+  wishlistEventObject: WishlistEventObject
 }
 
 export interface RemoveFromWishlistData extends EventData {
   event: 'addToWishlist'
   eventName: 'vtex:addToWishlist'
-  wishlistEventObject: IWishlistEventObject;
+  wishlistEventObject: WishlistEventObject
 }
 
 interface CartItem {
@@ -315,7 +315,7 @@ export interface CommertialOffer {
   AvailableQuantity: number
 }
 
-export interface IWishlistEventObject {
+export interface WishlistEventObject {
   action?: string
   button_type?: string
   page_type?: string

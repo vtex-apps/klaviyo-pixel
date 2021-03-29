@@ -1,11 +1,17 @@
 import { canUseDOM } from 'vtex.render-runtime'
 
 import { CartChangedItems, CartItem, PixelMessage } from './typings/events'
-import { getCartProductId, getCartSkuId, getCategory, getProductId, sendAddToCartEvent } from './modules/pixelHelper'
+import {
+  getCartProductId,
+  getCartSkuId,
+  getCategory,
+  getProductId,
+  sendAddToCartEvent,
+} from './modules/pixelHelper'
 import { sendExtendedEcommerceEvents } from './modules/extendedEcommerceEvents'
 import push from './modules/push'
 
-let newItems: CartItem[] = []
+const newItems: CartItem[] = []
 
 export function handleEvents(e: PixelMessage) {
   sendExtendedEcommerceEvents(e)

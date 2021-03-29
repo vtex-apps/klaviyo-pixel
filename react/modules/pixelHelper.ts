@@ -1,7 +1,6 @@
 import { CartChangedItems, CartItem, ProductDetail } from '../typings/events'
 import push from './push'
 
-
 export const removeStartAndEndSlash = (category?: string) =>
   category?.replace(/^\/|\/$/g, '')
 
@@ -34,8 +33,8 @@ export const getCartSkuId = (product: CartItem) => {
   return product.skuId
 }
 
-export const replaceAll = (str: string, search: string, replacement: string) => str.split(search).join(replacement)
-
+export const replaceAll = (str: string, search: string, replacement: string) =>
+  str.split(search).join(replacement)
 
 export const sendAddToCartEvent = ({
   items,
@@ -46,7 +45,6 @@ export const sendAddToCartEvent = ({
   allItems?: CartChangedItems[]
   itemNames?: string[]
 }) => {
-
   items.forEach(item => {
     const addedToCartItems = {
       $value: item.price / 100,
@@ -70,5 +68,3 @@ export const sendAddToCartEvent = ({
     push(['track', 'Added to Cart', addedToCartItems])
   })
 }
-
-
