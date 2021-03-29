@@ -5,8 +5,12 @@
 This app enables basic Klaviyo tracking for your VTEX store, including these JavaScript Track API events:
 
 - `Active on Site` - When someone visits your website
+- `Viewed Page` - When someone views a page
 - `Viewed Product` - When someone views a product
+- `Viewed Category` - When someone views a category page
 - `Added to Cart` - When someone adds an item to their cart
+- `Removed from Cart` - When someone removes an item from their cart
+- `Wishlist Update` - When someone updates their wishlist to add or remove a product
 
 and these server-side Track API events:
 
@@ -28,52 +32,58 @@ and these server-side Track API events:
 If you wish to track the Klaviyo "checkout started" event, the following code must be added to your `checkout6-custom.js` file:
 
 ```js
-let klaviyoNotified = false;
+let klaviyoNotified = false
 var e = document.createElement('script')
-      ;(e.type = 'text/javascript'),
-        (e.async = true),
-        (e.src =
-          'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=ABCDEF')
-      var t = document.getElementsByTagName('script')[0]
-      t.parentNode.insertBefore(e, t)
+;(e.type = 'text/javascript'),
+  (e.async = true),
+  (e.src = 'https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=ABCDEF')
+var t = document.getElementsByTagName('script')[0]
+t.parentNode.insertBefore(e, t)
 $(window).on('hashchange', function() {
   const { orderForm } = vtexjs.checkout
   if (orderForm.clientProfileData && !klaviyoNotified && _learnq) {
-    _learnq.push(['identify', {
-    '$email': orderForm.clientProfileData.email,
-    '$first_name': orderForm.clientProfileData.firstName,
-    '$last_name': orderForm.clientProfileData.lastName 
-    }]);
+    _learnq.push([
+      'identify',
+      {
+        $email: orderForm.clientProfileData.email,
+        $first_name: orderForm.clientProfileData.firstName,
+        $last_name: orderForm.clientProfileData.lastName,
+      },
+    ])
     let klaviyoItems = []
     let productNames = []
     let categories = []
-    orderForm.items.forEach((item) => {
+    orderForm.items.forEach(item => {
       productNames.push(item.name)
       const key = Object.keys(item.productCategories)[0]
       categories.push(item.productCategories[key])
       klaviyoItems.push({
-        "ProductID": item.productRefId,
-        "SKU": item.id,
-        "ProductName": item.name,
-        "Quantity": item.quantity,
-        "ItemPrice": item.sellingPrice / 100,
-        "RowTotal": item.price / 100,
-        "ProductURL": window.location.hostname + item.detailUrl,
-        "ImageURL": item.imageUrl,
-        "ProductCategories": Object.values(item.productCategories)
+        ProductID: item.productRefId,
+        SKU: item.id,
+        ProductName: item.name,
+        Quantity: item.quantity,
+        ItemPrice: item.sellingPrice / 100,
+        RowTotal: item.price / 100,
+        ProductURL: window.location.hostname + item.detailUrl,
+        ImageURL: item.imageUrl,
+        ProductCategories: Object.values(item.productCategories),
       })
     })
-    _learnq.push(["track", "Started Checkout", {
-      "$event_id": orderForm.orderFormId,
-      "$value": orderForm.value / 100,
-      "ItemNames": productNames,
-      "CheckoutURL": window.location.hostname + "/checkout#/cart",
-      "Categories": categories,
-      "Items": klaviyoItems
-    }]);
-    klaviyoNotified = true;
+    _learnq.push([
+      'track',
+      'Started Checkout',
+      {
+        $event_id: orderForm.orderFormId,
+        $value: orderForm.value / 100,
+        ItemNames: productNames,
+        CheckoutURL: window.location.hostname + '/checkout#/cart',
+        Categories: categories,
+        Items: klaviyoItems,
+      },
+    ])
+    klaviyoNotified = true
   }
- });
+})
 ```
-⚠️ Make sure to change `?company_id=ABCDEF` on line 6 to use your specific Klaviyo Company ID. 
 
+⚠️ Make sure to change `?company_id=ABCDEF` on line 6 to use your specific Klaviyo Company ID.

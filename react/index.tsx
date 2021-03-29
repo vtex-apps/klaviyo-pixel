@@ -8,16 +8,17 @@ import {
   getProductId,
   sendAddToCartEvent,
 } from './modules/pixelHelper'
+import { sendExtendedEcommerceEvents } from './modules/extendedEcommerceEvents'
+import push from './modules/push'
 
-declare const _learnq: any
 const newItems: CartItem[] = []
 
 export function handleEvents(e: PixelMessage) {
+  sendExtendedEcommerceEvents(e)
   switch (e.data.eventName) {
     case 'vtex:userData': {
       const { email, firstName, lastName } = e.data
-      const learnq = _learnq || []
-      learnq.push([
+      push([
         'identify',
         {
           $email: email,
@@ -29,7 +30,6 @@ export function handleEvents(e: PixelMessage) {
     }
     case 'vtex:productView': {
       const { product } = e.data
-      const learnq = _learnq || []
       const item = {
         ProductName: product.productName,
         ProductID: getProductId(product),
@@ -47,8 +47,10 @@ export function handleEvents(e: PixelMessage) {
       }
 
       if (!item.Price) break
-      learnq.push(['track', 'Viewed Product', item])
-      learnq.push([
+
+      push(['track', 'Viewed Product', item])
+
+      push([
         'trackViewedItem',
         {
           Title: item.ProductName,
