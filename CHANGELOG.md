@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-03-29
+
 ### Added
 
 - Send additional data to Klaviyo with events `vtex:pageView`, `vtex.removeFromCart`, `vtex:categoryView`, `vtex:addToWishlist`, and `vtex:removeFromWishlist`
