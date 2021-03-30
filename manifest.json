@@ -1,7 +1,7 @@
 {
   "name": "klaviyo-pixel",
   "vendor": "vtex",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "title": "Klaviyo Integration",
   "description": "Integration of Klaviyo Analytics",
   "billingOptions": {

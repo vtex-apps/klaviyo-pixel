@@ -17,5 +17,5 @@
     "vtex.pixel-interfaces": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.pixel-interfaces@1.1.1/public/_types/react",
     "vtex.render-runtime": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.100.1/public/@types/vtex.render-runtime"
   },
-  "version": "0.4.0"
+  "version": "0.4.1"
 }
