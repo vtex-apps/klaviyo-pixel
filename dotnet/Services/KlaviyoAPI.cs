@@ -190,7 +190,7 @@ namespace Klaviyo.Services
             var response = await client.SendAsync(request);
             string responseContent = await response.Content.ReadAsStringAsync();
             Console.WriteLine($"[-] SendEvent Response {response.StatusCode} Content = '{responseContent}' [-]");
-            _context.Vtex.Logger.Info("SendEvent", null, $"[{response.StatusCode}] {responseContent}");
+            _context.Vtex.Logger.Debug("SendEvent", null, $"{jsonSerializedEvent} [{response.StatusCode}] {responseContent}");
 
             // Responses from requests made to the Identify or Track APIs will return either 0 or 1.
             // A 1 response means your data was received successfully and is queued for processing.
@@ -209,95 +209,147 @@ namespace Klaviyo.Services
             if (vtexOrder != null)
             {
                 MerchantSettings merchantSettings = await _orderFeedAPI.GetMerchantSettings();
-                klaviyoEvent = new KlaviyoEvent
+                if (eventType.Equals(Constants.Events.PlacedOrder) ||
+                    eventType.Equals(Constants.Events.Canceled) ||
+                    eventType.Equals(Constants.Events.FulfilledOrder))
                 {
-                    CustomerProperties = new CustomerProperties
+                    List<string> categoryNames = new List<string>();
+                    List<string> categoryIds = vtexOrder.Items.Select(i => i.AdditionalInfo.CategoriesIds.Replace(@"\", string.Empty)).ToList();
+                    foreach (string categoryId in categoryIds)
                     {
-                        Address1 = vtexOrder.ShippingData.Address.Street,
-                        Address2 = vtexOrder.ShippingData.Address.Number,
-                        City = vtexOrder.ShippingData.Address.City,
-                        Country = vtexOrder.ShippingData.Address.Country,
-                        Email = vtexOrder.ClientProfileData.Email,
-                        FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
-                        LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
-                        PhoneNumber = vtexOrder.ClientProfileData.Phone, //vtexOrder.ShippingData.Address.Phone,
-                        Region = vtexOrder.ShippingData.Address.State,
-                        Zip = vtexOrder.ShippingData.Address.PostalCode
-                    },
-                    Event = eventType,
-                    Properties = new Properties
-                    {
-                        Brands = vtexOrder.Items.Select(i => i.AdditionalInfo.BrandName).ToList(),
-                        Categories = vtexOrder.Items.Select(i => i.AdditionalInfo.CategoriesIds.Replace(@"\", string.Empty)).ToList(),
-                        DiscountCode = string.Join(',', vtexOrder.RatesAndBenefitsData.RateAndBenefitsIdentifiers.Select(r => r.Name).ToList()),
-                        DiscountValue = vtexOrder.Totals.Where(t => t.Name == "Discounts").Select(d => d.Value).FirstOrDefault(),
-                        EventId = vtexOrder.OrderId,
-                        ItemNames = vtexOrder.Items.Select(i => i.Name).ToList(),
-                        Items = new List<KlaviyoItem>(),
-                        Value = ToDollar(vtexOrder.Totals.Sum(t => t.Value))
-                    },
-                    //Time = lastChange.UtcTicks,
-                    Token = merchantSettings.AppId
-                };
+                        CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(categoryId);
+                        if (categoryResponse != null)
+                        {
+                            categoryNames.Add(categoryResponse.Name);
+                        }
+                    }
 
-                foreach (Item item in vtexOrder.Items)
-                {
-                    KlaviyoItem klaviyoItem = new KlaviyoItem
+                    klaviyoEvent = new KlaviyoEvent
                     {
-                        BillingAddress = new Address
+                        CustomerProperties = new CustomerProperties
                         {
-                            Address1 = vtexOrder.ShippingData.Address.Street,
-                            Address2 = vtexOrder.ShippingData.Address.Number,
-                            City = vtexOrder.ShippingData.Address.City,
-                            Country = vtexOrder.ShippingData.Address.Country,
+                            //Address1 = vtexOrder.ShippingData.Address.Street,
+                            //Address2 = vtexOrder.ShippingData.Address.Number,
+                            //City = vtexOrder.ShippingData.Address.City,
+                            //Country = vtexOrder.ShippingData.Address.Country,
+                            Email = vtexOrder.ClientProfileData.Email,
                             FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
                             LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
-                            Region = vtexOrder.ShippingData.Address.State,
-                            Zip = vtexOrder.ShippingData.Address.PostalCode,
-                            Company = null,
-                            CountryCode = vtexOrder.ShippingData.Address.Country,
-                            Phone = vtexOrder.ClientProfileData.Phone,
-                            RegionCode = vtexOrder.ShippingData.Address.State
+                            PhoneNumber = vtexOrder.ClientProfileData.Phone, //vtexOrder.ShippingData.Address.Phone,
+                            //Region = vtexOrder.ShippingData.Address.State,
+                            //Zip = vtexOrder.ShippingData.Address.PostalCode
                         },
-                        Brand = item.AdditionalInfo.BrandName,
-                        Categories = new Dictionary<string, string>(),
-                        ImageUrl = item.ImageUrl.AbsoluteUri,
-                        ItemPrice = ToDollar(item.Price),
-                        ProductId = item.ProductId,
-                        ProductName = item.Name,
-                        ProductUrl = $"{merchantSettings.ProductRootUrl}{item.DetailUrl}",
-                        Quantity = item.Quantity,
-                        RowTotal = ToDollar(item.Price * item.Quantity),
-                        ShippingAddress = new Address
+                        Event = eventType,
+                        Properties = new Properties
                         {
-                            Address1 = vtexOrder.ShippingData.Address.Street,
-                            Address2 = vtexOrder.ShippingData.Address.Number,
-                            City = vtexOrder.ShippingData.Address.City,
-                            Country = vtexOrder.ShippingData.Address.Country,
-                            FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
-                            LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
-                            Region = vtexOrder.ShippingData.Address.State,
-                            Zip = vtexOrder.ShippingData.Address.PostalCode,
-                            Company = null,
-                            CountryCode = vtexOrder.ShippingData.Address.Country,
-                            Phone = vtexOrder.ClientProfileData.Phone,
-                            RegionCode = vtexOrder.ShippingData.Address.State
+                            Brands = vtexOrder.Items.Select(i => i.AdditionalInfo.BrandName).ToList(),
+                            Categories = categoryNames,
+                            DiscountCode = string.Join(',', vtexOrder.RatesAndBenefitsData.RateAndBenefitsIdentifiers.Select(r => r.Name).ToList()),
+                            DiscountValue = vtexOrder.Totals.Where(t => t.Name == "Discounts").Select(d => d.Value).FirstOrDefault(),
+                            EventId = vtexOrder.OrderId,
+                            ItemNames = vtexOrder.Items.Select(i => i.Name).ToList(),
+                            Items = new List<KlaviyoItem>(),
+                            Value = ToDollar(vtexOrder.Totals.Sum(t => t.Value)),
+                            BillingAddress = new Address
+                            {
+                                //Address1 = vtexOrder.ShippingData.Address.Street,
+                                //Address2 = vtexOrder.ShippingData.Address.Number,
+                                //City = vtexOrder.ShippingData.Address.City,
+                                //Country = vtexOrder.ShippingData.Address.Country,
+                                FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
+                                LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
+                                //Region = vtexOrder.ShippingData.Address.State,
+                                //Zip = vtexOrder.ShippingData.Address.PostalCode,
+                                Company = null,
+                                //CountryCode = vtexOrder.ShippingData.Address.Country,
+                                Phone = vtexOrder.ClientProfileData.Phone,
+                                //RegionCode = vtexOrder.ShippingData.Address.State
+                            },
+                            ShippingAddress = new Address
+                            {
+                                Address1 = vtexOrder.ShippingData.Address.Street,
+                                Address2 = vtexOrder.ShippingData.Address.Number,
+                                City = vtexOrder.ShippingData.Address.City,
+                                Country = vtexOrder.ShippingData.Address.Country,
+                                //FirstName = vtexOrder.ClientProfileData.FirstName, //vtexOrder.ShippingData.Address.FirstName,
+                                //LastName = vtexOrder.ClientProfileData.LastName, //vtexOrder.ShippingData.Address.LastName,
+                                Region = vtexOrder.ShippingData.Address.State,
+                                Zip = vtexOrder.ShippingData.Address.PostalCode,
+                                Company = null,
+                                CountryCode = vtexOrder.ShippingData.Address.Country,
+                                Phone = vtexOrder.ClientProfileData.Phone,
+                                RegionCode = vtexOrder.ShippingData.Address.State
+                            }
                         },
-                        Sku = item.SellerSku
+                        //Time = lastChange.UtcTicks,
+                        Token = merchantSettings.AppId
                     };
 
-                    klaviyoItem.Categories.Add("001", item.AdditionalInfo.CategoriesIds.ToString().Replace(@"\", string.Empty));
-                    klaviyoItem.Categories.Add("002", item.AdditionalInfo.CategoriesIds.ToString().Replace(@"\", string.Empty));
+                    foreach (Item item in vtexOrder.Items)
+                    {
+                        KlaviyoItem klaviyoItem = new KlaviyoItem
+                        {
+                            Brand = item.AdditionalInfo.BrandName,
+                            Categories = new List<string>(),
+                            ImageUrl = item.ImageUrl.AbsoluteUri,
+                            ItemPrice = ToDollar(item.Price),
+                            ProductId = item.ProductId,
+                            ProductName = item.Name,
+                            ProductUrl = $"{merchantSettings.ProductRootUrl}{item.DetailUrl}",
+                            Quantity = item.Quantity,
+                            RowTotal = ToDollar(item.Price * item.Quantity),
+                            Sku = item.SellerSku
+                        };
 
-                    klaviyoEvent.Properties.Items.Add(klaviyoItem);
+                        CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(item.AdditionalInfo.CategoriesIds.ToString().Replace(@"/", string.Empty));
+                        klaviyoItem.Categories.Add(categoryResponse.Name);
+                        klaviyoEvent.Properties.Items.Add(klaviyoItem);
+                    }
+
+                    if(eventType.Equals(Constants.Events.Canceled))
+                    {
+                        klaviyoEvent.Properties.Reason = vtexOrder.CancelReason;
+                    }
+                }
+                else if(eventType.Equals(Constants.Events.OrderedProduct))
+                {
+                    klaviyoEvent = new KlaviyoEvent
+                    {
+                        Token = merchantSettings.AppId,
+                        Event = eventType,
+                        CustomerProperties = new CustomerProperties
+                        {
+                            Email = vtexOrder.ClientProfileData.Email,
+                            FirstName = vtexOrder.ClientProfileData.FirstName,
+                            LastName = vtexOrder.ClientProfileData.LastName
+                        },
+                        Properties = new Properties
+                        {
+                            EventId = vtexOrder.OrderId,
+                            Value = ToDollar(vtexOrder.Items[0].Price),     //ToDollar(vtexOrder.Items[0].Price * vtexOrder.Items[0].Quantity),
+                            OrderId = vtexOrder.OrderId,
+                            ProductId = vtexOrder.Items[0].ProductId,
+                            Sku = vtexOrder.Items[0].SellerSku,
+                            ProductName = vtexOrder.Items[0].Name,
+                            Quantity = vtexOrder.Items[0].Quantity,
+                            ProductUrl = $"{merchantSettings.ProductRootUrl}{vtexOrder.Items[0].DetailUrl}",
+                            ImageUrl = vtexOrder.Items[0].ImageUrl.AbsoluteUri,
+                            Categories = new List<string>(),
+                            ProductBrand = vtexOrder.Items[0].AdditionalInfo.BrandName
+                        },
+                        //Time = 
+                    };
+
+                    CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(vtexOrder.Items[0].AdditionalInfo.CategoriesIds.ToString().Replace(@"/", string.Empty));
+                    klaviyoEvent.Properties.Categories.Add(categoryResponse.Name);
                 }
 
-                _context.Vtex.Logger.Info("BuildEvent", null, JsonConvert.SerializeObject(klaviyoEvent));
+                _context.Vtex.Logger.Debug("BuildEvent", eventType, JsonConvert.SerializeObject(klaviyoEvent));
             }
             else
             {
                 Console.WriteLine($"Could not load order {vtexOrder.OrderId}");
-                _context.Vtex.Logger.Info("BuildEvent", null, $"Could not load order {vtexOrder.OrderId}");
+                _context.Vtex.Logger.Warn("BuildEvent", null, $"Could not load order {vtexOrder.OrderId}");
             }
 
             return klaviyoEvent;
