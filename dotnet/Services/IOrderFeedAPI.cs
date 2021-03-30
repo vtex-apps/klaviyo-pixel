@@ -8,5 +8,6 @@ namespace Klaviyo.Services
         Task<HookNotification> CreateOrUpdateHook();
         Task<VtexOrder> GetOrderInformation(string orderId);
         Task<MerchantSettings> GetMerchantSettings();
+        Task<CategoryResponse> GetCategoryById(string categoryId);
     }
 }

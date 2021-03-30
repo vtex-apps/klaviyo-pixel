@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Klaviyo.Models
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
 
     public class KlaviyoEvent
     {
@@ -82,6 +83,40 @@ namespace Klaviyo.Models
 
         [JsonProperty("Items")]
         public List<KlaviyoItem> Items { get; set; }
+
+        [JsonProperty("BillingAddress")]
+        public Address BillingAddress { get; set; }
+
+        [JsonProperty("ShippingAddress")]
+        public Address ShippingAddress { get; set; }
+
+        // Ordered Item
+        [JsonProperty("OrderId")]
+        public string OrderId { get; set; }
+
+        [JsonProperty("ProductID")]
+        public string ProductId { get; set; }
+
+        [JsonProperty("SKU")]
+        public string Sku { get; set; }
+
+        [JsonProperty("ProductName")]
+        public string ProductName { get; set; }
+
+        [JsonProperty("Quantity")]
+        public int Quantity { get; set; }
+
+        [JsonProperty("ProductURL")]
+        public string ProductUrl { get; set; }
+
+        [JsonProperty("ImageURL")]
+        public string ImageUrl { get; set; }
+
+        [JsonProperty("ProductBrand")]
+        public string ProductBrand { get; set; }
+
+        [JsonProperty("Reason")]
+        public string Reason { get; set; }
     }
 
     public class KlaviyoItem
@@ -111,54 +146,48 @@ namespace Klaviyo.Models
         public string ImageUrl { get; set; }
 
         [JsonProperty("Categories")]
-        public Dictionary<string, string> Categories { get; set; }
+        public List<string> Categories { get; set; }
 
         [JsonProperty("Brand")]
         public string Brand { get; set; }
-
-        [JsonProperty("billing_address")]
-        public Address BillingAddress { get; set; }
-
-        [JsonProperty("shipping_address")]
-        public Address ShippingAddress { get; set; }
     }
 
     public class Address
     {
-        [JsonProperty("first_name")]
+        [JsonProperty("FirstName")]
         public string FirstName { get; set; }
 
-        [JsonProperty("last_name")]
+        [JsonProperty("LastName")]
         public string LastName { get; set; }
 
-        [JsonProperty("company")]
+        [JsonProperty("Company")]
         public string Company { get; set; }
 
-        [JsonProperty("address1")]
+        [JsonProperty("Address1")]
         public string Address1 { get; set; }
 
-        [JsonProperty("address2")]
+        [JsonProperty("Address2")]
         public string Address2 { get; set; }
 
-        [JsonProperty("city")]
+        [JsonProperty("City")]
         public string City { get; set; }
 
-        [JsonProperty("region")]
+        [JsonProperty("Region")]
         public string Region { get; set; }
 
-        [JsonProperty("region_code")]
+        [JsonProperty("RegionCode")]
         public string RegionCode { get; set; }
 
-        [JsonProperty("country")]
+        [JsonProperty("Country")]
         public string Country { get; set; }
 
-        [JsonProperty("country_code")]
+        [JsonProperty("CountryCode")]
         public string CountryCode { get; set; }
 
-        [JsonProperty("zip")]
+        [JsonProperty("Zip")]
         public string Zip { get; set; }
 
-        [JsonProperty("phone")]
+        [JsonProperty("Phone")]
         public string Phone { get; set; }
     }
 }
