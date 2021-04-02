@@ -214,13 +214,25 @@ namespace Klaviyo.Services
                     eventType.Equals(Constants.Events.FulfilledOrder))
                 {
                     List<string> categoryNames = new List<string>();
-                    List<string> categoryIds = vtexOrder.Items.Select(i => i.AdditionalInfo.CategoriesIds.Replace(@"\", string.Empty)).ToList();
+                    List<string> rawCategoryIds = vtexOrder.Items.Select(i => i.AdditionalInfo.CategoriesIds).ToList();
+                    List<string> categoryIds = new List<string>();
+                    foreach (string rawCategoryId in rawCategoryIds)
+                    {
+                        Console.WriteLine($"    ---  rawCategoryId = {rawCategoryId}");
+                        List<string> parsedIds = rawCategoryId.Split('/').ToList();
+                        categoryIds.AddRange(parsedIds);
+                    }
+
                     foreach (string categoryId in categoryIds)
                     {
-                        CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(categoryId);
-                        if (categoryResponse != null)
+                        Console.WriteLine($"    ---  categoryId = {categoryId}");
+                        if (!string.IsNullOrEmpty(categoryId))
                         {
-                            categoryNames.Add(categoryResponse.Name);
+                            CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(categoryId);
+                            if (categoryResponse != null)
+                            {
+                                categoryNames.Add(categoryResponse.Name);
+                            }
                         }
                     }
 
@@ -301,8 +313,19 @@ namespace Klaviyo.Services
                             Sku = item.SellerSku
                         };
 
-                        CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(item.AdditionalInfo.CategoriesIds.ToString().Replace(@"/", string.Empty));
-                        klaviyoItem.Categories.Add(categoryResponse.Name);
+                        List<string> itemCategoryIds = item.AdditionalInfo.CategoriesIds.Split('/').ToList();
+                        foreach (string itemCategoryId in itemCategoryIds)
+                        {
+                            if (!string.IsNullOrEmpty(itemCategoryId))
+                            {
+                                CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(itemCategoryId);
+                                if (categoryResponse != null && !string.IsNullOrEmpty(categoryResponse.Name))
+                                {
+                                    klaviyoItem.Categories.Add(categoryResponse.Name);
+                                }
+                            }
+                        }
+
                         klaviyoEvent.Properties.Items.Add(klaviyoItem);
                     }
 
@@ -340,8 +363,18 @@ namespace Klaviyo.Services
                         //Time = 
                     };
 
-                    CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(vtexOrder.Items[0].AdditionalInfo.CategoriesIds.ToString().Replace(@"/", string.Empty));
-                    klaviyoEvent.Properties.Categories.Add(categoryResponse.Name);
+                    List<string> itemCategoryIds = vtexOrder.Items[0].AdditionalInfo.CategoriesIds.Split('/').ToList();
+                    foreach (string itemCategoryId in itemCategoryIds)
+                    {
+                        if (!string.IsNullOrEmpty(itemCategoryId))
+                        {
+                            CategoryResponse categoryResponse = await _orderFeedAPI.GetCategoryById(itemCategoryId);
+                            if (categoryResponse != null && !string.IsNullOrEmpty(categoryResponse.Name))
+                            {
+                                klaviyoEvent.Properties.Categories.Add(categoryResponse.Name);
+                            }
+                        }
+                    }
                 }
 
                 _context.Vtex.Logger.Debug("BuildEvent", eventType, JsonConvert.SerializeObject(klaviyoEvent));
